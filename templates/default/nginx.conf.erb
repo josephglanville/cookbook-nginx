@@ -1,0 +1,29 @@
+user <%= @conf['user'] %>;
+worker_processes <%= @conf['worker_processes'] %>;
+pid <%= @conf['pid'] %>;
+
+events {
+	worker_connections <%= @conf['events']['worker_connections'] %>;
+        multi_accept <%= @conf['events']['multi_accept'] %>;
+}
+
+http {
+	sendfile <%= @conf['http']['sendfile'] %>;
+	tcp_nopush <%= @conf['http']['tcp_nopush'] %>;
+	tcp_nodelay <%= @conf['http']['tcp_nodelay'] %>;
+	keepalive_timeout <%= @conf['http']['keepalive_timeout'] %>;
+	types_hash_max_size 2048;
+
+	include /etc/nginx/mime.types;
+
+	default_type application/octet-stream;
+	access_log <%= ::File.join(@conf['http']['log_dir'], 'access.log') %>;
+	error_log <%= ::File.join(@conf['http']['log_dir'], 'error.log') %>;
+
+	gzip <%= @conf['http']['gzip'] %>;
+	gzip_disable "<%= @conf['http']['gzip_disable'] %>";
+
+<% @conf['http']['includes'].each do |include_dir| %>
+        include <%= include_dir %>;
+<% end %>
+}
